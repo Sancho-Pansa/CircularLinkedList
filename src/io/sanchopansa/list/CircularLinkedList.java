@@ -1,8 +1,6 @@
 package io.sanchopansa.list;
 
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * Данный класс описывает цикличный связанный список (Circular Linked List).
@@ -13,7 +11,10 @@ import java.util.stream.Stream;
  * @version 0.1
  * @see java.util.LinkedList
  */
-public class CircularLinkedList<T> implements Collection<T> {
+@SuppressWarnings("unused")
+public class CircularLinkedList<T>
+        extends AbstractSequentialList<T>
+        implements java.io.Serializable, Cloneable {
 
     private int size = 0;
     private Node<T> first = null;
@@ -27,11 +28,10 @@ public class CircularLinkedList<T> implements Collection<T> {
      * Создает цикличный список из элементов Collection, которые будут вставлены в список в
      * соответствии с итератором этой коллекции.
      * @param c Коллекция, которая будет вставлена в список
-     * @throws NullPointerException
      */
     public CircularLinkedList(Collection<? extends T> c) {
         this();
-        this.addAll(c);
+        addAll(c);
     }
 
     private void linkFirst(T t) {
@@ -213,27 +213,6 @@ public class CircularLinkedList<T> implements Collection<T> {
     }
 
     /**
-     * Returns <tt>true</tt> if this collection contains the specified element.
-     * More formally, returns <tt>true</tt> if and only if this collection
-     * contains at least one element <tt>e</tt> such that
-     * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
-     *
-     * @param o element whose presence in this collection is to be tested
-     * @return <tt>true</tt> if this collection contains the specified
-     * element
-     * @throws ClassCastException   if the type of the specified element
-     *                              is incompatible with this collection
-     *                              (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified element is null and this
-     *                              collection does not permit null elements
-     *                              (<a href="#optional-restrictions">optional</a>)
-     */
-    @Override
-    public boolean contains(Object o) {
-        return false;
-    }
-
-    /**
      * Возвращает итератор по циклическому списку, который проходит один раз по кольцу.
      * @apiNote Неправильно сработает, если в кольце несколько полных копий одного объекта
      * @return an <tt>Iterator</tt> over the elements in this collection
@@ -258,22 +237,56 @@ public class CircularLinkedList<T> implements Collection<T> {
         };
     }
 
-    /**
-     * Returns an array containing all of the elements in this collection.
-     * If this collection makes any guarantees as to what order its elements
-     * are returned by its iterator, this method must return the elements in
-     * the same order.
-     *
-     * <p>The returned array will be "safe" in that no references to it are
-     * maintained by this collection.  (In other words, this method must
-     * allocate a new array even if this collection is backed by an array).
-     * The caller is thus free to modify the returned array.
-     *
-     * <p>This method acts as bridge between array-based and collection-based
-     * APIs.
-     *
-     * @return an array containing all of the elements in this collection
-     */
+    @Override
+    public ListIterator<T> listIterator(int index) {
+        return new ListIterator<T>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public T next() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+
+            @Override
+            public T previous() {
+                return null;
+            }
+
+            @Override
+            public int nextIndex() {
+                return 0;
+            }
+
+            @Override
+            public int previousIndex() {
+                return 0;
+            }
+
+            @Override
+            public void remove() {
+
+            }
+
+            @Override
+            public void set(T t) {
+
+            }
+
+            @Override
+            public void add(T t) {
+
+            }
+        };
+    }
+
     @Override
     public Object[] toArray() {
         Object[] result = new Object[this.size];
@@ -284,51 +297,21 @@ public class CircularLinkedList<T> implements Collection<T> {
         return result;
     }
 
-    /**
-     * Returns an array containing all of the elements in this collection;
-     * the runtime type of the returned array is that of the specified array.
-     * If the collection fits in the specified array, it is returned therein.
-     * Otherwise, a new array is allocated with the runtime type of the
-     * specified array and the size of this collection.
-     *
-     * <p>If this collection fits in the specified array with room to spare
-     * (i.e., the array has more elements than this collection), the element
-     * in the array immediately following the end of the collection is set to
-     * <tt>null</tt>.  (This is useful in determining the length of this
-     * collection <i>only</i> if the caller knows that this collection does
-     * not contain any <tt>null</tt> elements.)
-     *
-     * <p>If this collection makes any guarantees as to what order its elements
-     * are returned by its iterator, this method must return the elements in
-     * the same order.
-     *
-     * <p>Like the {@link #toArray()} method, this method acts as bridge between
-     * array-based and collection-based APIs.  Further, this method allows
-     * precise control over the runtime type of the output array, and may,
-     * under certain circumstances, be used to save allocation costs.
-     *
-     * <p>Suppose <tt>x</tt> is a collection known to contain only strings.
-     * The following code can be used to dump the collection into a newly
-     * allocated array of <tt>String</tt>:
-     *
-     * <pre>
-     *     String[] y = x.toArray(new String[0]);</pre>
-     * <p>
-     * Note that <tt>toArray(new Object[0])</tt> is identical in function to
-     * <tt>toArray()</tt>.
-     *
-     * @param a the array into which the elements of this collection are to be
-     *          stored, if it is big enough; otherwise, a new array of the same
-     *          runtime type is allocated for this purpose.
-     * @return an array containing all of the elements in this collection
-     * @throws ArrayStoreException  if the runtime type of the specified array
-     *                              is not a supertype of the runtime type of every element in
-     *                              this collection
-     * @throws NullPointerException if the specified array is null
-     */
     @Override
+    @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] a) {
-        return null;
+        if(a.length < size)
+            a = (T1[]) java.lang.reflect.Array.newInstance(
+                    a.getClass().getComponentType(), size);
+        int i = 0;
+        Object[] result = a;
+        for(CircularLinkedList.Node<T> x = first; x != null; x = x.next)
+            result[i++] = x.item;
+
+        if(a.length > size)
+            a[size] = null;
+
+        return a;
     }
 
     /**
@@ -392,256 +375,57 @@ public class CircularLinkedList<T> implements Collection<T> {
      */
     @Override
     public boolean remove(Object o) {
-        return false;
-    }
-
-    /**
-     * Returns <tt>true</tt> if this collection contains all of the elements
-     * in the specified collection.
-     *
-     * @param c collection to be checked for containment in this collection
-     * @return <tt>true</tt> if this collection contains all of the elements
-     * in the specified collection
-     * @throws ClassCastException   if the types of one or more elements
-     *                              in the specified collection are incompatible with this
-     *                              collection
-     *                              (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified collection contains one
-     *                              or more null elements and this collection does not permit null
-     *                              elements
-     *                              (<a href="#optional-restrictions">optional</a>),
-     *                              or if the specified collection is null.
-     * @see #contains(Object)
-     */
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
-    /**
-     * Adds all of the elements in the specified collection to this collection
-     * (optional operation).  The behavior of this operation is undefined if
-     * the specified collection is modified while the operation is in progress.
-     * (This implies that the behavior of this call is undefined if the
-     * specified collection is this collection, and this collection is
-     * nonempty.)
-     *
-     * @param c collection containing elements to be added to this collection
-     * @return <tt>true</tt> if this collection changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>addAll</tt> operation
-     *                                       is not supported by this collection
-     * @throws ClassCastException            if the class of an element of the specified
-     *                                       collection prevents it from being added to this collection
-     * @throws NullPointerException          if the specified collection contains a
-     *                                       null element and this collection does not permit null elements,
-     *                                       or if the specified collection is null
-     * @throws IllegalArgumentException      if some property of an element of the
-     *                                       specified collection prevents it from being added to this
-     *                                       collection
-     * @throws IllegalStateException         if not all the elements can be added at
-     *                                       this time due to insertion restrictions
-     * @see #add(Object)
-     */
-    @Override
-    public boolean addAll(Collection<? extends T> c) {
-        if(c.isEmpty())
-            return false;
-        for (T x : c) {
-            this.linkLast(x);
+        Node<T> x = first;
+        if(o == null) {
+            do {
+                if(x.item == null) {
+                    unlink(x);
+                    return true;
+                }
+                x = x.next;
+            } while(x != first);
+        } else {
+            do {
+                if(o.equals(x.item)) {
+                    unlink(x);
+                    return true;
+                }
+                x = x.next;
+            } while(x != first);
         }
-        return true;
-    }
-
-    /**
-     * Removes all of this collection's elements that are also contained in the
-     * specified collection (optional operation).  After this call returns,
-     * this collection will contain no elements in common with the specified
-     * collection.
-     *
-     * @param c collection containing elements to be removed from this collection
-     * @return <tt>true</tt> if this collection changed as a result of the
-     * call
-     * @throws UnsupportedOperationException if the <tt>removeAll</tt> method
-     *                                       is not supported by this collection
-     * @throws ClassCastException            if the types of one or more elements
-     *                                       in this collection are incompatible with the specified
-     *                                       collection
-     *                                       (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException          if this collection contains one or more
-     *                                       null elements and the specified collection does not support
-     *                                       null elements
-     *                                       (<a href="#optional-restrictions">optional</a>),
-     *                                       or if the specified collection is null
-     * @see #remove(Object)
-     * @see #contains(Object)
-     */
-    @Override
-    public boolean removeAll(Collection<?> c) {
         return false;
-    }
-
-    /**
-     * Removes all of the elements of this collection that satisfy the given
-     * predicate.  Errors or runtime exceptions thrown during iteration or by
-     * the predicate are relayed to the caller.
-     *
-     * @param filter a predicate which returns {@code true} for elements to be
-     *               removed
-     * @return {@code true} if any elements were removed
-     * @throws NullPointerException          if the specified filter is null
-     * @throws UnsupportedOperationException if elements cannot be removed
-     *                                       from this collection.  Implementations may throw this exception if a
-     *                                       matching element cannot be removed or if, in general, removal is not
-     *                                       supported.
-     * @implSpec The default implementation traverses all elements of the collection using
-     * its {@link #iterator}.  Each matching element is removed using
-     * {@link Iterator#remove()}.  If the collection's iterator does not
-     * support removal then an {@code UnsupportedOperationException} will be
-     * thrown on the first matching element.
-     * @since 1.8
-     */
-    @Override
-    public boolean removeIf(Predicate<? super T> filter) {
-        return Collection.super.removeIf(filter);
-    }
-
-    /**
-     * Retains only the elements in this collection that are contained in the
-     * specified collection (optional operation).  In other words, removes from
-     * this collection all of its elements that are not contained in the
-     * specified collection.
-     *
-     * @param c collection containing elements to be retained in this collection
-     * @return <tt>true</tt> if this collection changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>retainAll</tt> operation
-     *                                       is not supported by this collection
-     * @throws ClassCastException            if the types of one or more elements
-     *                                       in this collection are incompatible with the specified
-     *                                       collection
-     *                                       (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException          if this collection contains one or more
-     *                                       null elements and the specified collection does not permit null
-     *                                       elements
-     *                                       (<a href="#optional-restrictions">optional</a>),
-     *                                       or if the specified collection is null
-     * @see #remove(Object)
-     * @see #contains(Object)
-     */
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
-    }
-
-    /**
-     * Removes all of the elements from this collection (optional operation).
-     * The collection will be empty after this method returns.
-     *
-     * @throws UnsupportedOperationException if the <tt>clear</tt> operation
-     *                                       is not supported by this collection
-     */
-    @Override
-    public void clear() {
-
-    }
-
-    /**
-     * Creates a {@link Spliterator} over the elements in this collection.
-     * <p>
-     * Implementations should document characteristic values reported by the
-     * spliterator.  Such characteristic values are not required to be reported
-     * if the spliterator reports {@link Spliterator#SIZED} and this collection
-     * contains no elements.
-     *
-     * <p>The default implementation should be overridden by subclasses that
-     * can return a more efficient spliterator.  In order to
-     * preserve expected laziness behavior for the {@link #stream()} and
-     * {@link #parallelStream()}} methods, spliterators should either have the
-     * characteristic of {@code IMMUTABLE} or {@code CONCURRENT}, or be
-     * <em><a href="Spliterator.html#binding">late-binding</a></em>.
-     * If none of these is practical, the overriding class should describe the
-     * spliterator's documented policy of binding and structural interference,
-     * and should override the {@link #stream()} and {@link #parallelStream()}
-     * methods to create streams using a {@code Supplier} of the spliterator,
-     * as in:
-     * <pre>{@code
-     *     Stream<E> s = StreamSupport.stream(() -> spliterator(), spliteratorCharacteristics)
-     * }</pre>
-     * <p>These requirements ensure that streams produced by the
-     * {@link #stream()} and {@link #parallelStream()} methods will reflect the
-     * contents of the collection as of initiation of the terminal stream
-     * operation.
-     *
-     * @return a {@code Spliterator} over the elements in this collection
-     * @implSpec The default implementation creates a
-     * <em><a href="Spliterator.html#binding">late-binding</a></em> spliterator
-     * from the collections's {@code Iterator}.  The spliterator inherits the
-     * <em>fail-fast</em> properties of the collection's iterator.
-     * <p>
-     * The created {@code Spliterator} reports {@link Spliterator#SIZED}.
-     * @implNote The created {@code Spliterator} additionally reports
-     * {@link Spliterator#SUBSIZED}.
-     *
-     * <p>If a spliterator covers no elements then the reporting of additional
-     * characteristic values, beyond that of {@code SIZED} and {@code SUBSIZED},
-     * does not aid clients to control, specialize or simplify computation.
-     * However, this does enable shared use of an immutable and empty
-     * spliterator instance (see {@link Spliterators#emptySpliterator()}) for
-     * empty collections, and enables clients to determine if such a spliterator
-     * covers no elements.
-     * @since 1.8
-     */
-    @Override
-    public Spliterator<T> spliterator() {
-        return Collection.super.spliterator();
-    }
-
-    /**
-     * Returns a sequential {@code Stream} with this collection as its source.
-     *
-     * <p>This method should be overridden when the {@link #spliterator()}
-     * method cannot return a spliterator that is {@code IMMUTABLE},
-     * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
-     * for details.)
-     *
-     * @return a sequential {@code Stream} over the elements in this collection
-     * @implSpec The default implementation creates a sequential {@code Stream} from the
-     * collection's {@code Spliterator}.
-     * @since 1.8
-     */
-    @Override
-    public Stream<T> stream() {
-        return Collection.super.stream();
-    }
-
-    /**
-     * Returns a possibly parallel {@code Stream} with this collection as its
-     * source.  It is allowable for this method to return a sequential stream.
-     *
-     * <p>This method should be overridden when the {@link #spliterator()}
-     * method cannot return a spliterator that is {@code IMMUTABLE},
-     * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
-     * for details.)
-     *
-     * @return a possibly parallel {@code Stream} over the elements in this
-     * collection
-     * @implSpec The default implementation creates a parallel {@code Stream} from the
-     * collection's {@code Spliterator}.
-     * @since 1.8
-     */
-    @Override
-    public Stream<T> parallelStream() {
-        return Collection.super.parallelStream();
     }
 
     @Override
     public String toString() {
-        String result = "CircularLinked List: [";
+        StringBuilder result = new StringBuilder("CircularLinked List: [");
         Object[] cllArray = this.toArray();
         for (int i = 0; i < cllArray.length - 1; i++) {
-            result += cllArray[i].toString() + ", ";
+            result.append(cllArray[i].toString()).append(", ");
         }
-        result += "]\r\n";
-        return result;
+        result.append("]\r\n");
+        return result.toString();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public CircularLinkedList<T> clone() {
+        CircularLinkedList<T> clone;
+        try {
+            clone = (CircularLinkedList<T>) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
+        }
+        // Обнулить клон
+        clone.first = null;
+        clone.last = null;
+        clone.size = 0;
+        Node<T> x = first;
+        do {
+            clone.add(x.item);
+            x = x.next;
+        } while(x != first);
+        return clone;
     }
 
     private static class Node<T> {
