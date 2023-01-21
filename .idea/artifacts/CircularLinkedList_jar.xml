@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CircularLinkedList:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CircularLinkedList.jar</output-path>
+    <root id="archive" name="CircularLinkedList.jar">
+      <element id="module-output" name="CircularLinkedList" />
+    </root>
+  </artifact>
+</component>

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
-import io.sanchopansa.list.CircularLinkedList;
 
 class CircularLinkedListTest {
     private String[] testArray = {
@@ -34,10 +33,12 @@ class CircularLinkedListTest {
     }
 
     @org.junit.jupiter.api.Test
-    void testIterator() {
+    void testShift() {
+        String newLastElement = testArray[0];
+        cll.shiftList();
+        assertEquals(cll.getLast(), newLastElement);
         Iterator<String> iter = cll.iterator();
         while(iter.hasNext())
             System.out.println(iter.next());
-        assertTrue(true);
     }
 }

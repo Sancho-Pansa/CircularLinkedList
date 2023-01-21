@@ -428,6 +428,17 @@ public class CircularLinkedList<T>
         return clone;
     }
 
+    /**
+     * Смещает циклический список на 1 позицию дальше;
+     * "Первый" элемент становится последним, новым "первым" элементом объявляется бывший второй.
+     */
+    public void shiftList() {
+        if(this.isEmpty())
+            throw new NullPointerException("CLL is empty");
+        last = first;
+        first = first.next;
+    }
+
     private static class Node<T> {
 
         private Node<T> prev;
