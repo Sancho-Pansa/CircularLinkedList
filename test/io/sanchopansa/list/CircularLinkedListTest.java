@@ -1,7 +1,6 @@
 package io.sanchopansa.list;
 
 import java.util.Arrays;
-import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,8 +36,22 @@ class CircularLinkedListTest {
         String newLastElement = testArray[0];
         cll.shiftList();
         assertEquals(cll.getLast(), newLastElement);
-        Iterator<String> iter = cll.iterator();
-        while(iter.hasNext())
-            System.out.println(iter.next());
+        for (String s : cll)
+            System.out.println(s);
+    }
+
+    @org.junit.jupiter.api.Test
+    void testReverseShift() {
+        String newLastElement = testArray[testArray.length - 2];
+        cll.reverseShift();
+        assertEquals(cll.getLast(), newLastElement);
+        for (String s : cll)
+            System.out.println(s);
+    }
+
+    @org.junit.jupiter.api.Test
+    void testEquals() {
+        CircularLinkedList<String> cll2 = new CircularLinkedList<>(Arrays.asList(testArray));
+        assertEquals(cll, cll2);
     }
 }

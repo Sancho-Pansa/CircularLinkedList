@@ -292,7 +292,7 @@ public class CircularLinkedList<T>
         Object[] result = new Object[this.size];
         Node<T> current = first;
         for(int i = 0; i < result.length; i++, current = current.next) {
-            result[i] = current;
+            result[i] = current.item;
         }
         return result;
     }
@@ -403,8 +403,31 @@ public class CircularLinkedList<T>
         for (int i = 0; i < cllArray.length - 1; i++) {
             result.append(cllArray[i].toString()).append(", ");
         }
-        result.append("]\r\n");
+        result.append(cllArray[cllArray.length - 1]).append("]\r\n");
         return result.toString();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean equals(Object o) {
+        if(this == o)
+            return true;
+        if(o instanceof CircularLinkedList) {
+            CircularLinkedList<T> cll = (CircularLinkedList<T>) o;
+            if(this.size() != cll.size())
+                return false;
+            Iterator<T> iteratorOriginal = this.iterator();
+            Iterator<T> iteratorCompare = cll.iterator();
+            while(iteratorOriginal.hasNext()) {
+                T first = iteratorOriginal.next();
+                T second = iteratorCompare.next();
+                if(!(first.equals(second)))
+                    return false;
+            }
+            return true;
+        }
+        else
+            return false;
     }
 
     @Override
@@ -429,7 +452,7 @@ public class CircularLinkedList<T>
     }
 
     /**
-     * Смещает циклический список на 1 позицию дальше;
+     * Смещает циклический список на 1 позицию назад;
      * "Первый" элемент становится последним, новым "первым" элементом объявляется бывший второй.
      */
     public void shiftList() {
@@ -437,6 +460,17 @@ public class CircularLinkedList<T>
             throw new NullPointerException("CLL is empty");
         last = first;
         first = first.next;
+    }
+
+    /**
+     * Смещает циклический список на 1 позицию вперед.
+     * "Последний" элемент становится первым, новым "последним" объявляется предпослений.
+     */
+    public void reverseShift() {
+        if(this.isEmpty())
+            throw new NullPointerException("CLL is empty");
+        first = last;
+        last = last.prev;
     }
 
     private static class Node<T> {
